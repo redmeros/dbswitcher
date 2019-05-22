@@ -112,7 +112,7 @@ namespace DBSwitcher
         /// </summary>
         /// <param name="advanceSteelConfigDir"></param>
         /// <returns></returns>
-        public static DbConfig ReadCurrent(string advanceSteelConfigDir = "")
+        public static DbConfig ReadCurrent(string advanceSteelConfigDir)
         {
             if (advanceSteelConfigDir == "")
             {

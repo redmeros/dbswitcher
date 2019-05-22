@@ -1,0 +1,69 @@
+{
+  "DataSources": [
+    {
+      "Name": "AstorRules",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorRules.mdf"
+    },
+    {
+      "Name": "AstorDetails",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorDetails.mdf"
+    },
+    {
+      "Name": "AstorBase",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBase.mdf"
+    },
+    {
+      "Name": "AstorSettings",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorSettings.mdf"
+    },
+    {
+      "Name": "AstorControlStructure",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstCrtlDb.mdf"
+    },
+    {
+      "Name": "AstorBitmaps",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBitmaps.mdf"
+    },
+    {
+      "Name": "AstorProject",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Kernel\\Data\\AstorProject.mdf"
+    },
+    {
+      "Name": "AstorDetailsBase",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Kernel\\Data\\AstorDetailsBase.mdf"
+    },
+    {
+      "Name": "AstorKernelEnvironment",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Kernel\\Data\\AstorKernelEnvironment.mdf"
+    },
+    {
+      "Name": "AstorCurrentAddIn",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=User2\\Data\\AstorAddIn.mdf"
+    },
+    {
+      "Name": "AstorJointsCalculation",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=StressAnalysis\\Data\\AstorJointsCalculation.mdf"
+    },
+    {
+      "Name": "AstorGratings",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorGratings.mdf"
+    },
+    {
+      "Name": "AstorProfiles",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorProfiles.mdf"
+    },
+    {
+      "Name": "GTCMapping",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=Steel\\Data\\GTCMapping.mdf"
+    },
+    {
+      "Name": "AstorDatabase",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName="
+    }
+  ],
+  "AdvanceSteelConfigDir": "C:\\ProgramData\\Autodesk\\Advance Steel 2018\\POL",
+  "ConfigFileName": "C:\\ProgramData\\Autodesk\\Advance Steel 2018\\POL\\Configuration\\DatabaseConfiguration.xml",
+  "SupportDirIsLink": false,
+  "SupportDirLink": "C:\\ProgramData\\Autodesk\\Advance Steel 2018\\POL\\Shared\\Support\\",
+  "SupportPath": "C:\\ProgramData\\Autodesk\\Advance Steel 2018\\POL\\Shared\\Support"
+}

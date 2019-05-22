@@ -1,0 +1,69 @@
+{
+  "DataSources": [
+    {
+      "Name": "AstorRules",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorRules.mdf"
+    },
+    {
+      "Name": "AstorDetails",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorDetails.mdf"
+    },
+    {
+      "Name": "AstorBase",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorBase.mdf"
+    },
+    {
+      "Name": "AstorSettings",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorSettings.mdf"
+    },
+    {
+      "Name": "AstorControlStructure",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstCrtlDb.mdf"
+    },
+    {
+      "Name": "AstorBitmaps",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorBitmaps.mdf"
+    },
+    {
+      "Name": "AstorProject",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorProject.mdf"
+    },
+    {
+      "Name": "AstorDetailsBase",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorDetailsBase.mdf"
+    },
+    {
+      "Name": "AstorKernelEnvironment",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorKernelEnvironment.mdf"
+    },
+    {
+      "Name": "AstorCurrentAddIn",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorAddIn.mdf"
+    },
+    {
+      "Name": "AstorJointsCalculation",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorJointsCalculation.mdf"
+    },
+    {
+      "Name": "AstorGratings",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorGratings.mdf"
+    },
+    {
+      "Name": "AstorProfiles",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\AstorProfiles.mdf"
+    },
+    {
+      "Name": "GTCMapping",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS19\\GTCMapping.mdf"
+    },
+    {
+      "Name": "AstorDatabase",
+      "Value": "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=true;AttachDbFileName="
+    }
+  ],
+  "AdvanceSteelConfigDir": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL",
+  "ConfigFileName": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Configuration\\DatabaseConfiguration.xml",
+  "SupportDirIsLink": true,
+  "SupportDirLink": "\\\\fs01\\SQLAS19\\Support",
+  "SupportPath": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Shared\\Support"
+}
