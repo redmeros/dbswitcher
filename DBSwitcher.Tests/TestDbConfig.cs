@@ -34,7 +34,7 @@ namespace DBSwitcher.Tests
         [Test]
         public void SerializedAndDeserializedSettingsAreTheSame()
         {
-            var config = DbConfig.ReadCurrent();
+            var config = DbConfig.ReadCurrent("C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL");
             var serialized = config.SerializeToJson();
             var deserialized = DbConfig.Deserialize(serialized);
 

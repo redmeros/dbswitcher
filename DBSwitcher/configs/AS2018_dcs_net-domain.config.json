@@ -1,4 +1,6 @@
 {
+"Version": "2018",
+  "Name": "Baza wspólna użytkownik domenowy 2018",
   "DataSources": [
     {
       "Name": "AstorRules",

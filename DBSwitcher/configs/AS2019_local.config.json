@@ -1,4 +1,6 @@
 {
+"Version": "2019",
+  "Name": "Baza lokalna 2019",
   "DataSources": [
     {
       "Name": "AstorRules",
@@ -64,6 +66,6 @@
   "AdvanceSteelConfigDir": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL",
   "ConfigFileName": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Configuration\\DatabaseConfiguration.xml",
   "SupportDirIsLink": false,
-  "SupportDirLink": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Shared\\Support\\",
+  "SupportDirLink": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Shared\\Support",
   "SupportPath": "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL\\Shared\\Support"
 }

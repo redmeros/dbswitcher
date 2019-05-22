@@ -1,4 +1,6 @@
 {
+  "Version": "2019",
+  "Name": "Baza wspólna uzytkownik zwykly 2019",
   "DataSources": [
     {
       "Name": "AstorRules",

@@ -103,7 +103,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="DbConfigControl.xaml">
+    <Compile Include="DbDataSource.cs" />
+    <Compile Include="ZDbConfig.cs" />
+    <Page Include="DbSwitcherControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,10 +117,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConfigEntry.cs" />
-    <Compile Include="DbConfig.cs" />
-    <Compile Include="DbConfigControl.xaml.cs">
-      <DependentUpon>DbConfigControl.xaml</DependentUpon>
+    <Compile Include="DbSwitcherControl.xaml.cs">
+      <DependentUpon>DbSwitcherControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Junctions.cs" />
     <Compile Include="MainWindow.xaml.cs">

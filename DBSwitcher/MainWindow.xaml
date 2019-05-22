@@ -9,53 +9,12 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Narzędzia">
-                <MenuItem Header="Przełącz na wybrane ustawienia"
-                          Name="ActivateSettingsMenuItem"
-                          Click="MakeCurrentMenuItemClick">
-                </MenuItem>
-                <MenuItem Header="_Zapisz jako..." Click="SaveDbConfigAsMenuClick"></MenuItem>
-                <Separator></Separator>
                 <MenuItem Header="_Otwórz katalog ustawień" Click="OpenConfigDirMenuItemClick"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="_Zakończ" Click="CloseMemuItemClick"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Wersja AS" Name="AsVersionMenu">
-                <MenuItem Header="2018" IsCheckable="True" Click="SteelVersionItemClick" Tag="2018"></MenuItem>
-                <MenuItem Header="2019" IsCheckable="True" Click="SteelVersionItemClick" Tag="2019"></MenuItem>
-            </MenuItem>
         </Menu>
-        <Grid>
-            <GroupBox>
-                <GroupBox.Resources>
-                    <local:SelectOrNotSelectStyleSelector x:Key="comboItemStyleSelector"></local:SelectOrNotSelectStyleSelector>
-                </GroupBox.Resources>
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>
-                            Podgląd ustawień
-                        </TextBlock>
-                        <ComboBox
-                            ItemsSource="{Binding Path=ConfigEntries, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                            ItemContainerStyleSelector="{StaticResource comboItemStyleSelector}"
-                            DisplayMemberPath="ConfigName"
-                            Margin="10 0"
-                            MinWidth="150"
-                            SelectionChanged="ComboBox_SelectionChanged">
-                        </ComboBox>
-                        <TextBlock FontWeight="Bold" Text="{Binding Path=IsTheSameConfigAsCurrentText, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        </TextBlock>
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
-                    <local:DbConfigControl
-                        Grid.Row="0"
-                        DbConfig="{
-                            Binding Path=SelectedConfig,
-                            RelativeSource={
-                                RelativeSource AncestorType=local:MainWindow}
-                            }"></local:DbConfigControl>
-                </Grid>
-            </GroupBox>
-        </Grid>
+        <StackPanel Grid.Row="0" Name="zStackPanel">
+        </StackPanel>
     </DockPanel>
 </Window>

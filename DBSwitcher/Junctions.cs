@@ -16,6 +16,14 @@ public static class NativeMethods
 
     #region Public Methods
 
+    public static string NormalizePath(string path)
+    {
+        path = path.TrimEnd('\\');
+        path = path.Replace("\\\\?\\UNC\\", "\\\\");
+        path = path.Replace("\\\\?\\", "");
+        return path;
+    }
+
     [DllImport("kernel32.dll")]
     public static extern bool CreateSymbolicLink(string lpSymLinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
 
@@ -24,6 +32,12 @@ public static class NativeMethods
         File = 0,
         Directory = 1
     };
+
+    public static bool IsSymbolicLink(string path)
+    {
+        FileInfo pathInfo = new FileInfo(path);
+        return pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint);
+    }
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern IntPtr CreateFile(
