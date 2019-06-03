@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Xml;
 using Newtonsoft.Json;
@@ -88,6 +89,7 @@ namespace DBSwitcher
         public bool SupportDirIsLink { get; set; }
         public string SupportDirLink { get; set; }
         public ASVersion Version { get; set; } = ASVersion.v2019;
+        public bool DisabledVersion { get; set; } = false;
 
         #endregion Public Properties
 
@@ -117,21 +119,45 @@ namespace DBSwitcher
             return config;
         }
 
+        public bool IsValid()
+        {
+            try
+            {
+                var str = NativeMethods.GetFinalPathName(this.PathBuilder.SupportPath);
+                return true;
+            }
+            catch (Win32Exception)
+            {
+                return false;
+            }
+        }
+
         public static ZDbConfig ReadCurrent(ASVersion version)
         {
-            var config = new ZDbConfig
+            try
             {
-                Version = version,
-                Name = "Current config for AS" + version.ToString(),
-            };
-            config.SupportDirIsLink = NativeMethods.IsSymbolicLink(config.PathBuilder.SupportPath);
-            config.SupportDirLink = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath));
-            config.DataSources = ReadDataSourcesFromXml(version);
-            return config;
+                var config = new ZDbConfig
+                {
+                    Version = version,
+                    Name = "Current config for AS" + version.ToString(),
+                };
+                config.SupportDirIsLink = NativeMethods.IsSymbolicLink(config.PathBuilder.SupportPath);
+                config.SupportDirLink = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath));
+                config.DataSources = ReadDataSourcesFromXml(version);
+                return config;
+            }
+            catch (Win32Exception)
+            {
+                return null;
+            }
         }
 
         public static bool Compare(ZDbConfig a, ZDbConfig b, bool withName = false)
         {
+            if (a == null || b == null)
+            {
+                return false;
+            }
             //Data sourcy
             if (a.DataSources.Count != b.DataSources.Count)
             {
@@ -175,8 +201,6 @@ namespace DBSwitcher
 
         public bool IsCurrent()
         {
-            Console.WriteLine("ROZPOCZYNAM PORÓWNANIE");
-            Console.WriteLine(Name);
             var configCurrent = ReadCurrent(Version);
             return Compare(this, configCurrent);
         }

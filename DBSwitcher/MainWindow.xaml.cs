@@ -48,9 +48,18 @@ namespace DBSwitcher
                 log.Info(string.Format("Directory {0} already exists, not creating new one", WorkingDir));
             }
             log.Info(string.Format("App directory is {0}", _applicationPath));
-            log.Warn("AppStarted");
+            log.Info("AppStarted");
 
-            this.ComposeUi();
+            ComposeUi();
+            log.Info("Ui composed");
+            this.Visibility = Visibility.Visible;
+            this.Show();
+        }
+
+        ~MainWindow()
+        {
+            log.Info("Zamykam aplikację ... ");
+            NLog.LogManager.Flush();
         }
 
         private void ComposeUi()
@@ -64,25 +73,6 @@ namespace DBSwitcher
         }
 
         public ASVersion CurrentVersion { get; set; } = ASVersion.v2019;
-
-        public string GetAdvanceSteelDir(ASVersion version)
-        {
-            string res = "";
-            switch (version)
-            {
-                case ASVersion.v2018:
-                    res = "C:\\ProgramData\\Autodesk\\Advance Steel 2018\\POL";
-                    break;
-
-                case ASVersion.v2019:
-                    res = "C:\\ProgramData\\Autodesk\\Advance Steel 2019\\POL";
-                    break;
-
-                default:
-                    throw (new ArgumentException("Nie mogę rozpoznać wersji steela"));
-            }
-            return res;
-        }
 
         #endregion Public Constructors
 
@@ -104,7 +94,7 @@ namespace DBSwitcher
         /// <param name="e"></param>
         private void CloseMemuItemClick(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         /// <summary>

@@ -95,6 +95,19 @@ namespace DBSwitcher
 
                 if (!(btn.Tag is ZConfigEntry entry))
                 {
+                    btn.IsEnabled = false;
+                    continue;
+                }
+
+                if (!entry.Config.IsValid())
+                {
+                    btn.IsEnabled = false;
+                    continue;
+                }
+
+                if (btn.Tag == null)
+                {
+                    btn.IsEnabled = false;
                     continue;
                 }
 
