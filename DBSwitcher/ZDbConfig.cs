@@ -201,8 +201,14 @@ namespace DBSwitcher
 
         public bool IsCurrent()
         {
-            var configCurrent = ReadCurrent(Version);
-            return Compare(this, configCurrent);
+            try
+            {
+                var configCurrent = ReadCurrent(Version);
+                return Compare(this, configCurrent);
+            } catch (FileNotFoundException ex)
+            {
+                return false;
+            }
         }
 
         public void MakeCurrent()
