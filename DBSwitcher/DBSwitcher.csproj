@@ -27,7 +27,7 @@
     <UpdateUrl>\\fs01\ARCHIWUM\02-DCS-DESIGN\DCS-STAL\ASDBSWITCHER\</UpdateUrl>
     <SuiteName>ZDesigner suite</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
