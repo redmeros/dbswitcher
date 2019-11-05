@@ -80,6 +80,14 @@ namespace DBSwitcher
         {
         }
 
+        private Dictionary<ASVersion, string> ASNames = new Dictionary<ASVersion, string>()
+        {
+            { ASVersion.v2018, "Advance Steel 2018" },
+            { ASVersion.v2019, "Advance Steel 2019" },
+            { ASVersion.v2020, "Advance Steel 2020" }
+
+        };
+
         #endregion Private Constructors
 
         #region Public Properties
@@ -89,7 +97,12 @@ namespace DBSwitcher
         public bool SupportDirIsLink { get; set; }
         public string SupportDirLink { get; set; }
         public ASVersion Version { get; set; } = ASVersion.v2019;
-        public bool DisabledVersion { get; set; } = false;
+        public bool DisabledVersion { 
+            get
+            {
+                return !ZSteelDicovery.IsSoftwareInstalled(ASNames[this.Version]);
+            }
+        }
 
         #endregion Public Properties
 
@@ -123,7 +136,11 @@ namespace DBSwitcher
         {
             try
             {
+                // to jest sprawdzenie nie wiem czego, jesli to nie jest katalog to rzuca wyjatkiem
                 var str = NativeMethods.GetFinalPathName(this.PathBuilder.SupportPath);
+
+                // tutaj jest sprawdzenie czy w ogole mam szukac danej wersji...
+                // najlepiej by bylo z configu zczytywac jakas wartosc i sprawdzac czy jest w rejestrze
                 return true;
             }
             catch (Win32Exception)

@@ -99,6 +99,16 @@ namespace DBSwitcher
                     continue;
                 }
 
+                //var entry = btn.Tag as ZConfigEntry;
+                //entry.Config.
+                //if (entry= btn.Tag as ZConfigEntry)
+
+                if (entry.Config.DisabledVersion)
+                {
+                    btn.IsEnabled = false;
+                    continue;
+                }
+
                 if (!entry.Config.IsValid())
                 {
                     btn.IsEnabled = false;

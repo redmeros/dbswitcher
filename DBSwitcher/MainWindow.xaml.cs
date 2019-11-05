@@ -10,7 +10,8 @@ namespace DBSwitcher
     public enum ASVersion
     {
         v2018 = 2018,
-        v2019 = 2019
+        v2019 = 2019,
+        v2020 = 2020,
     }
 
     /// <summary>
@@ -54,6 +55,23 @@ namespace DBSwitcher
             log.Info("Ui composed");
             this.Visibility = Visibility.Visible;
             this.Show();
+
+            //string[] arr = new string[3];
+
+            //arr[0] = "Advance Steel 2018234234";
+            //arr[1] = "Advance Steel 2019";
+            //arr[2] = "Advance Steel 2020";
+
+            //foreach (var name in arr)
+            //{
+            //    if (ZSteelDicovery.IsSoftwareInstalled(name))
+            //    {
+            //        MessageBox.Show(string.Format("{0} is installed", name));
+            //    } else
+            //    {
+            //        MessageBox.Show(string.Format("{0} is not installed", name));
+            //    }
+            //}
         }
 
         ~MainWindow()

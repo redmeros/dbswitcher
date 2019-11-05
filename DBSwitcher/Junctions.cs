@@ -52,7 +52,7 @@ public static class NativeMethods
     public static string GetFinalPathName(string path)
     {
         var log = NLog.LogManager.GetCurrentClassLogger();
-        log.Info(string.Format("Sciezka ktora sprawdzam: {0}", path));
+        //log.Info(string.Format("Sciezka ktora sprawdzam: {0}", path));
         var h = CreateFile(path,
             FILE_READ_EA,
             FileShare.ReadWrite | FileShare.Delete,
