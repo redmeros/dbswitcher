@@ -33,6 +33,10 @@ namespace DBSwitcher
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            if (e.ExceptionObject is System.IO.FileNotFoundException fnf)
+            {
+                MessageBox.Show(fnf.FileName);
+            }
             MessageBox.Show(e.ExceptionObject.ToString());
         }
 
