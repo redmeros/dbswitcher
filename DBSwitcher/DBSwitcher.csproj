@@ -27,7 +27,7 @@
     <UpdateUrl>\\ad03\DCS\02-DCS-DESIGN\DCS-STAL\ASDBSWITCHER_NEW\</UpdateUrl>
     <SuiteName>ZDesigner suite</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>21</ApplicationRevision>
+    <ApplicationRevision>22</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -114,6 +114,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DbDataSource.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="ZDbConfig.cs" />
     <Compile Include="ZSteelDicovery.cs" />
     <Page Include="DbSwitcherControl.xaml">
@@ -170,16 +171,25 @@
     <Content Include="configs\AS2020_dcs_net-non-domain.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="configs\AS2020_dcs_net-domain.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="configs\AS2020_kotman_net-non-domain.config.json.bak">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="configs\AS2020_local.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="configs\AS2020_dcs_net-domain.config.json">
+    <Content Include="configs\RVT2020_dcs_net-domain.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="configs\AS2019_kotman_net-non-domain.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\RVT2020_local.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\RVT2020_dcs_net-non-domain.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="dbswitcher.snk" />

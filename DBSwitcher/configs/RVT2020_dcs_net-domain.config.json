@@ -1,0 +1,48 @@
+{
+  "Version": "92020",
+  "Name": "Baza wspólna użytkownik domenowy 2020",
+  "DataSources": [
+    {
+      "Name": "AstorRules",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorRules.mdf"
+    },
+    {
+      "Name": "AstorBase",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorBase.mdf"
+    },
+    {
+      "Name": "AstorSettings",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorSettings.mdf"
+    },
+    {
+      "Name": "AstorControlStructure",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstCrtlDb.mdf"
+    },
+    {
+      "Name": "AstorBitmaps",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorBitmaps.mdf"
+    },
+    {
+      "Name": "AstorCurrentAddIn",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorAddIn.mdf"
+    },
+    {
+      "Name": "AstorJointsCalculation",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorJointsCalculation.mdf"
+    },
+    {
+      "Name": "AstorProfiles",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorProfiles.mdf"
+    },
+    {
+      "Name": "GTCMapping",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=true;AttachDbFileName=\\\\fs01\\SQLAS20\\GTCMapping.mdf"
+    }
+  ],
+  "AdvanceSteelConfigDir": "",
+  "ConfigFileName": "",
+  "SupportDirIsLink": true,
+  "SupportDirLink": "",
+  "SupportPath": "",
+  "RevitConfigFileName": "C:\\ProgramData\\Autodesk\\Revit Steel Connections 2020\\pl-PL\\DatabaseConfiguration.xml"
+}

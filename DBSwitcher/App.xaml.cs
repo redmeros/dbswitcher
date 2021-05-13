@@ -9,7 +9,7 @@ namespace DBSwitcher
     /// </summary>
     public partial class App : Application
     {
-        private NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         public App()
         {

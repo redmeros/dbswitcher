@@ -14,7 +14,8 @@
                 <MenuItem Header="_Zakończ" Click="CloseMemuItemClick"></MenuItem>
             </MenuItem>
         </Menu>
-        <StackPanel Grid.Row="0" Name="zStackPanel">
-        </StackPanel>
+        <ScrollViewer>
+            <StackPanel x:Name="zStackPanel"/>
+        </ScrollViewer>
     </DockPanel>
 </Window>

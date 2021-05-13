@@ -15,7 +15,7 @@ namespace DBSwitcher
     {
         #region Private Fields
 
-        private NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        //private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         #endregion Private Fields
 
@@ -61,7 +61,13 @@ namespace DBSwitcher
 
         public static string VersionString(ASVersion version)
         {
-            return "Advance Steel " + ((int)version).ToString();
+            if ((int)version < 3000)
+            {
+                return "Advance Steel " + ((int)version).ToString();
+            } else
+            {
+                return "Revit " + ((int)version - 90000).ToString();
+            }
         }
 
         public void ComposeUI()
@@ -98,11 +104,10 @@ namespace DBSwitcher
                     btn.IsEnabled = false;
                     continue;
                 }
-
-                //var entry = btn.Tag as ZConfigEntry;
-                //entry.Config.
-                //if (entry= btn.Tag as ZConfigEntry)
-
+                if (Utils.IsRevit(entry.Version))
+                {
+                    Console.WriteLine("");
+                }
                 if (entry.Config.DisabledVersion)
                 {
                     btn.IsEnabled = false;
@@ -120,6 +125,9 @@ namespace DBSwitcher
                     btn.IsEnabled = false;
                     continue;
                 }
+                var res = entry.Config.IsCurrent();
+                var ver = entry.Config.Version;
+                var ever = entry.Version;
 
                 if (entry.Config.IsCurrent())
                 {
@@ -195,9 +203,22 @@ namespace DBSwitcher
 
         public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version)
         {
+
+
             var files = Directory.GetFiles(dirpath);
-            var verstr = "AS" + ((int)version).ToString();
-            var pattern = "(?<asversion>" + verstr + ")_(?<name>[A-Za-z_-]+).config.json$";
+            string pattern;
+            string verstr;
+
+            if ((int)version < 3000)
+            {
+                verstr = "AS" + ((int)version).ToString();
+                pattern = "(?<asversion>" + verstr + ")_(?<name>[A-Za-z_-]+).config.json$";
+            }
+            else
+            {
+                verstr = "RVT" + ((int)version - 90000).ToString();
+                pattern = "(?<asversion>" + verstr + ")_(?<name>[A-Za-z_-]+).config.json$";
+            }
 
             var result = new List<ZConfigEntry>();
             foreach (var filename in files)

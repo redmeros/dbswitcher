@@ -80,12 +80,12 @@ namespace DBSwitcher
         {
         }
 
-        private Dictionary<ASVersion, string> ASNames = new Dictionary<ASVersion, string>()
+        private readonly Dictionary<ASVersion, string> ASNames = new Dictionary<ASVersion, string>()
         {
             { ASVersion.v2018, "Advance Steel 2018" },
             { ASVersion.v2019, "Advance Steel 2019" },
-            { ASVersion.v2020, "Advance Steel 2020" }
-
+            { ASVersion.v2020, "Advance Steel 2020" },
+            { ASVersion.rvt2020, "Autodesk Revit 2020" },
         };
 
         #endregion Private Constructors
@@ -97,6 +97,7 @@ namespace DBSwitcher
         public bool SupportDirIsLink { get; set; }
         public string SupportDirLink { get; set; }
         public ASVersion Version { get; set; } = ASVersion.v2019;
+        public string RevitConfigFileName { get; set; } = "";
         public bool DisabledVersion { 
             get
             {
@@ -136,8 +137,11 @@ namespace DBSwitcher
         {
             try
             {
-                // to jest sprawdzenie nie wiem czego, jesli to nie jest katalog to rzuca wyjatkiem
-                var str = NativeMethods.GetFinalPathName(this.PathBuilder.SupportPath);
+                if (!Utils.IsRevit(Version))
+                {
+                    // to jest sprawdzenie nie wiem czego, jesli to nie jest katalog to rzuca wyjatkiem
+                    var str = NativeMethods.GetFinalPathName(this.PathBuilder.SupportPath);
+                }
 
                 // tutaj jest sprawdzenie czy w ogole mam szukac danej wersji...
                 // najlepiej by bylo z configu zczytywac jakas wartosc i sprawdzac czy jest w rejestrze
@@ -158,8 +162,15 @@ namespace DBSwitcher
                     Version = version,
                     Name = "Current config for AS" + version.ToString(),
                 };
-                config.SupportDirIsLink = NativeMethods.IsSymbolicLink(config.PathBuilder.SupportPath);
-                config.SupportDirLink = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath));
+                if (Utils.IsRevit(version))
+                {
+                    config.Name = "Current config for RVT" + Utils.RevitVersion(version).ToString();
+                }
+                if (!Utils.IsRevit(version))
+                {
+                    config.SupportDirIsLink = NativeMethods.IsSymbolicLink(config.PathBuilder.SupportPath);
+                    config.SupportDirLink = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath));
+                }
                 config.DataSources = ReadDataSourcesFromXml(version);
                 return config;
             }
@@ -171,6 +182,10 @@ namespace DBSwitcher
 
         public static bool Compare(ZDbConfig a, ZDbConfig b, bool withName = false)
         {
+            if (Utils.IsRevit(a.Version) || Utils.IsRevit(a.Version))
+            {
+                Console.WriteLine("test");
+            }
             if (a == null || b == null)
             {
                 return false;
@@ -191,17 +206,18 @@ namespace DBSwitcher
                     return false;
                 }
             }
+            if (!Utils.IsRevit(a.Version) || !Utils.IsRevit(b.Version)) {
+                if (a.SupportDirIsLink != b.SupportDirIsLink)
+                {
+                    log.Debug("Nie zgadza się supportdirislink");
+                    return false;
+                }
 
-            if (a.SupportDirIsLink != b.SupportDirIsLink)
-            {
-                log.Debug("Nie zgadza się supportdirislink");
-                return false;
-            }
-
-            if (a.SupportDirLink != b.SupportDirLink)
-            {
-                log.Debug("Nie zgadza się supportdirlink");
-                return false;
+                if (a.SupportDirLink != b.SupportDirLink)
+                {
+                    log.Debug("Nie zgadza się supportdirlink");
+                    return false;
+                }
             }
 
             if (withName)
@@ -222,7 +238,7 @@ namespace DBSwitcher
             {
                 var configCurrent = ReadCurrent(Version);
                 return Compare(this, configCurrent);
-            } catch (FileNotFoundException ex)
+            } catch (FileNotFoundException)
             {
                 return false;
             }
@@ -230,6 +246,12 @@ namespace DBSwitcher
 
         public void MakeCurrent()
         {
+            if (Utils.IsRevit(this.Version))
+            {
+                log.Info("Wykryto konfigurację dla revita");
+                MakeCurrentRevit();
+                return;
+            }
             log.Info("Rozpoczynam proces zmiany ustawień");
             BackupConfigFile();
             DeleteConfigFile();
@@ -237,6 +259,13 @@ namespace DBSwitcher
             CreateXMLDoc();
             PrepareSupportDir();
             log.Info("Proces przywracania ustawień zakończony");
+        }
+
+        public void MakeCurrentRevit()
+        {
+            log.Info("Rozpoczynam proces zmiany ustawień dla revita");
+            BackupRevitConfigFile();
+            CreateXMLDoc(RevitConfigFileName);
         }
 
         public string Serialize(bool WithName = true)
@@ -248,6 +277,22 @@ namespace DBSwitcher
         #endregion Public Methods
 
         #region Protected Methods
+
+        protected bool BackupRevitConfigFile()
+        {
+            log.Info("Rozpoczynam backup pliku konfiguracyjnego");
+            var newConfigFileName = Path.ChangeExtension(RevitConfigFileName, DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l"));
+            log.Info(string.Format("Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}", newConfigFileName));
+            try
+            {
+                File.Copy(RevitConfigFileName, newConfigFileName);
+            } catch (Exception e)
+            {
+                log.Warn(e.Message);
+                throw e;
+            }
+            return true;
+        }
 
         protected bool BackupConfigFile()
         {
@@ -295,8 +340,12 @@ namespace DBSwitcher
             return true;
         }
 
-        protected bool CreateXMLDoc()
+        protected bool CreateXMLDoc(string saveFileName = "")
         {
+            if (saveFileName == "")
+            {
+                saveFileName = PathBuilder.ConfigPath;
+            }
             var doc = new XmlDocument();
             XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
             XmlElement root = doc.DocumentElement;
@@ -324,7 +373,8 @@ namespace DBSwitcher
             var encoding = new System.Text.UTF8Encoding(false);
             try
             {
-                using (StreamWriter sw = new StreamWriter(File.Open(PathBuilder.ConfigPath, FileMode.Create), encoding))
+               
+                using (StreamWriter sw = new StreamWriter(File.Open(saveFileName, FileMode.Create), encoding))
                 {
                     doc.Save(sw);
                 }
@@ -388,7 +438,14 @@ namespace DBSwitcher
         {
             var pathbuilder = new PathBuilder(version);
             var doc = new XmlDocument();
-            doc.Load(pathbuilder.ConfigPath);
+            var filename = pathbuilder.ConfigPath;
+
+            if (Utils.IsRevit(version))
+            {
+                filename = @"C:\ProgramData\Autodesk\Revit Steel Connections 2020\pl-PL\DatabaseConfiguration.xml";
+            }
+
+            doc.Load(filename);
 
             var _datasources = new List<DbDataSource>();
             var nodes = doc.DocumentElement.SelectNodes("/AdvanceSteel/DataSource");

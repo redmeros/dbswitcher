@@ -12,6 +12,7 @@ namespace DBSwitcher
         v2018 = 2018,
         v2019 = 2019,
         v2020 = 2020,
+        rvt2020 = 92020,
     }
 
     /// <summary>
@@ -21,10 +22,10 @@ namespace DBSwitcher
     {
         #region Private Fields
 
-        private NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         public string AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
-        private string _applicationPath;
+        private readonly string _applicationPath;
 
         #endregion Private Fields
 

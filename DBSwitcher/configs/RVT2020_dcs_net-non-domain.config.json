@@ -1,0 +1,48 @@
+{
+  "Version": "92020",
+  "Name": "Baza wspolna uzytkownik zwykly",
+  "DataSources": [
+    {
+      "Name": "AstorRules",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorRules.mdf"
+    },
+    {
+      "Name": "AstorBase",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorBase.mdf"
+    },
+    {
+      "Name": "AstorSettings",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorSettings.mdff"
+    },
+    {
+      "Name": "AstorControlStructure",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstCrtlDb.mdf"
+    },
+    {
+      "Name": "AstorBitmaps",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorBitmaps.mdf"
+    },
+    {
+      "Name": "AstorCurrentAddIn",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorAddIn.mdf"
+    },
+    {
+      "Name": "AstorJointsCalculation",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorJointsCalculation.mdf"
+    },
+    {
+      "Name": "AstorProfiles",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\AstorProfiles.mdf"
+    },
+    {
+      "Name": "GTCMapping",
+      "Value": "Server=192.168.0.232,1433\\ADVSTEEL;Integrated Security=false;User ID=as;Password=As123456;AttachDbFileName=\\\\fs01\\SQLAS20\\GTCMapping.mdf"
+    }
+  ],
+  "AdvanceSteelConfigDir": "",
+  "ConfigFileName": "",
+  "SupportDirIsLink": false,
+  "SupportDirLink": "",
+  "SupportPath": "",
+  "RevitConfigFileName": "C:\\ProgramData\\Autodesk\\Revit Steel Connections 2020\\pl-PL\\DatabaseConfiguration.xml"
+}
