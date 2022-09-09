@@ -1,0 +1,48 @@
+{
+  "Version": "92023",
+  "Name": "Baza lokalna Revit 2023",
+  "DataSources": [
+      {
+        "Name": "AstorRules",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorRules.mdf"
+      },
+      {
+        "Name": "AstorBase",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBase.mdf"
+      },
+      {
+        "Name": "AstorSettings",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorSettings.mdf"
+      },
+      {
+        "Name": "AstorControlStructure",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstCrtlDb.mdf"
+      },
+      {
+        "Name": "AstorBitmaps",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBitmaps.mdf"
+      },
+      {
+        "Name": "AstorCurrentAddIn",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=User2\\Data\\AstorAddIn.mdf"
+      },
+      {
+        "Name": "AstorJointsCalculation",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=StressAnalysis\\Data\\AstorJointsCalculation.mdf"
+      },
+      {
+        "Name": "AstorProfiles",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorProfiles.mdf"
+      },
+      {
+        "Name": "GTCMapping",
+        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\GTCMapping.mdf"
+      }
+  ],
+  "AdvanceSteelConfigDir": "",
+  "ConfigFileName": "",
+  "SupportDirIsLink": false,
+  "SupportDirLink": "",
+  "SupportPath": "",
+  "RevitConfigFileName": "C:\\ProgramData\\Autodesk\\Revit Steel Connections 2023\\pl-PL\\DatabaseConfiguration.xml"
+}

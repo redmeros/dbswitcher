@@ -85,7 +85,9 @@ namespace DBSwitcher
             { ASVersion.v2018, "Advance Steel 2018" },
             { ASVersion.v2019, "Advance Steel 2019" },
             { ASVersion.v2020, "Advance Steel 2020" },
+            { ASVersion.v2023, "Advance Steel 2023" },
             { ASVersion.rvt2020, "Autodesk Revit 2020" },
+            { ASVersion.rvt2023, "Autodesk Revit 2023" }
         };
 
         #endregion Private Constructors
@@ -253,7 +255,13 @@ namespace DBSwitcher
                 return;
             }
             log.Info("Rozpoczynam proces zmiany ustawień");
-            BackupConfigFile();
+            try
+            {
+                BackupConfigFile();
+            } catch (Exception ex)
+            {
+                log.Error(ex, "Blad podczas backupu bazy, operacja bedzie kontynuowana bez backupu");
+            }
             DeleteConfigFile();
             BackupSupportDir();
             CreateXMLDoc();
@@ -296,11 +304,11 @@ namespace DBSwitcher
 
         protected bool BackupConfigFile()
         {
-            log.Info("Rozpoczynam backup pliku z konfiguracyjnego");
-            var newConfigFileName = Path.ChangeExtension(PathBuilder.ConfigPath, DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l"));
-            log.Info(string.Format("Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}", newConfigFileName));
             try
             {
+                log.Info("Rozpoczynam backup pliku z konfiguracyjnego");
+                var newConfigFileName = Path.ChangeExtension(PathBuilder.ConfigPath, DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l"));
+                log.Info(string.Format("Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}", newConfigFileName));
                 File.Copy(PathBuilder.ConfigPath, newConfigFileName, false);
             }
             catch (Exception e)

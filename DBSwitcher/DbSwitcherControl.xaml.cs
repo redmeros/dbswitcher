@@ -201,6 +201,8 @@ namespace DBSwitcher
 
         #region Public Methods
 
+        private static readonly NLog.ILogger log = NLog.LogManager.GetCurrentClassLogger();
+
         public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version)
         {
 
@@ -226,15 +228,22 @@ namespace DBSwitcher
                 var match = Regex.Match(filename, pattern);
                 if (match.Success)
                 {
-                    var jsonstr = File.ReadAllText(filename);
-                    ZConfigEntry entry = new ZConfigEntry
+                    try
                     {
-                        Version = version,
-                        FileName = filename,
-                        Name = Path.GetFileNameWithoutExtension(filename),
-                        Config = ZDbConfig.Deserialize(jsonstr)
-                    };
-                    result.Add(entry);
+                        var jsonstr = File.ReadAllText(filename);
+                        ZConfigEntry entry = new ZConfigEntry
+                        {
+                            Version = version,
+                            FileName = filename,
+                            Name = Path.GetFileNameWithoutExtension(filename),
+                            Config = ZDbConfig.Deserialize(jsonstr)
+                        };
+                        result.Add(entry);
+                    } catch (Exception ex)
+                    {
+                        log.Error(ex, $"Blad podczas odczytywania json'a z pliku {filename}");
+                        throw ex;
+                    }
                 }
             }
 
