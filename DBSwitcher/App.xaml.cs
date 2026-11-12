@@ -21,6 +21,7 @@ namespace DBSwitcher
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             log.Info("Log started properly");
             base.OnStartup(e);
+            _ = Updater.CheckForUpdatesAsync();
         }
 
         protected override void OnExit(ExitEventArgs e)

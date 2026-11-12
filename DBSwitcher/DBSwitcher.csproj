@@ -11,16 +11,21 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Deterministic>false</Deterministic>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>1.2.0</Version>
+    <StartupObject>DBSwitcher.Program</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NLog" Version="6.2.2" />
+    <PackageReference Include="Velopack" Version="1.2.161" />
     <!-- <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.0" /> -->
   </ItemGroup>
   <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
     <Resource Include="logo.ico" />
     <Content Include="configs\*.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
