@@ -11,7 +11,9 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <Version>1.2.0</Version>
+    <!-- jedno źródło wersji: plik VERSION w katalogu głównym (make release podaje -p:Version) -->
+    <Version Condition="'$(Version)' == '' And Exists('$(MSBuildThisFileDirectory)..\VERSION')">$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\VERSION').Trim())</Version>
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
     <StartupObject>DBSwitcher.Program</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>

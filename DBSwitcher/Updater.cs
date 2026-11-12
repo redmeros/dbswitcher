@@ -15,6 +15,15 @@ namespace DBSwitcher
         /// </summary>
         private const string FeedPath = "//ad03/DCS/02-DCS-DESIGN/DCS-STAL/ASDBSWITCHER_NEW";
 
+        private static async Task WaitForIdleAsync()
+        {
+            while (OperationGuard.IsBusy)
+            {
+                log.Info("Trwa zmiana konfiguracji, aktualizacja poczeka");
+                await OperationGuard.WaitUntilIdleAsync();
+            }
+        }
+
         public static async Task CheckForUpdatesAsync()
         {
             try
@@ -41,6 +50,7 @@ namespace DBSwitcher
 
                 var version = update.TargetFullRelease.Version;
                 log.Info($"Dostępna nowa wersja {version}");
+                await WaitForIdleAsync();
                 var answer = MessageBox.Show(
                     $"Dostępna jest nowa wersja {version}. Zaktualizować teraz i uruchomić ponownie?",
                     "ASDbSwitcher",
@@ -52,6 +62,9 @@ namespace DBSwitcher
                 }
 
                 await manager.DownloadUpdatesAsync(update);
+
+                // w czasie pobierania ktoś mógł zacząć zmianę konfiguracji, restart nie może jej przerwać
+                await WaitForIdleAsync();
                 manager.ApplyUpdatesAndRestart(update);
             }
             catch (Exception ex)

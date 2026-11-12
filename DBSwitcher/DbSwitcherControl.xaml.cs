@@ -159,16 +159,19 @@ namespace DBSwitcher
         {
             var btn = sender as Button;
             var entry = btn.Tag as ZConfigEntry;
-            try
+            using (OperationGuard.Enter())
             {
-                entry.Config.MakeCurrent();
-                MessageBox.Show("Operacja przywracania ustawień zakończona");
+                try
+                {
+                    entry.Config.MakeCurrent();
+                    MessageBox.Show("Operacja przywracania ustawień zakończona");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                ConfigChanged(sender, e);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            ConfigChanged(sender, e);
         }
 
         #endregion Private Methods
