@@ -2,13 +2,18 @@ PROJECT := DBSwitcher/DBSwitcher.csproj
 CONFIG  ?= Release
 UNC     ?= //ad03/DCS/02-DCS-DESIGN/DCS-STAL/ASDBSWITCHER_NEW
 
-.PHONY: run build release
+.PHONY: run build clean release
 
 run:
 	dotnet run --project $(PROJECT)
 
 build:
 	dotnet build DBSwitcher.sln -c $(CONFIG)
+
+clean:
+	dotnet clean DBSwitcher.sln -c Debug
+	dotnet clean DBSwitcher.sln -c Release
+	rm -rf DBSwitcher/bin DBSwitcher/obj
 
 # Publishes a self-contained single-file x64 build (no .NET runtime needed on the target machine)
 release:
