@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Xml;
 using Newtonsoft.Json;
+using NLog;
 
 namespace DBSwitcher
 {
@@ -86,6 +87,7 @@ namespace DBSwitcher
             { ASVersion.v2019, "Advance Steel 2019" },
             { ASVersion.v2020, "Advance Steel 2020" },
             { ASVersion.v2023, "Advance Steel 2023" },
+            { ASVersion.v2027, "Advance Steel 2027" },
             { ASVersion.rvt2020, "Autodesk Revit 2020" },
             { ASVersion.rvt2023, "Autodesk Revit 2023" }
         };
@@ -162,11 +164,11 @@ namespace DBSwitcher
                 var config = new ZDbConfig
                 {
                     Version = version,
-                    Name = "Current config for AS" + version.ToString(),
+                    Name = "Current config for AS" + version,
                 };
                 if (Utils.IsRevit(version))
                 {
-                    config.Name = "Current config for RVT" + Utils.RevitVersion(version).ToString();
+                    config.Name = "Current config for RVT" + Utils.RevitVersion(version);
                 }
                 if (!Utils.IsRevit(version))
                 {
@@ -184,13 +186,14 @@ namespace DBSwitcher
 
         public static bool Compare(ZDbConfig a, ZDbConfig b, bool withName = false)
         {
-            if (Utils.IsRevit(a.Version) || Utils.IsRevit(a.Version))
-            {
-                Console.WriteLine("test");
-            }
             if (a == null || b == null)
             {
                 return false;
+            }
+            log.Info($"Comparing {a.Name} with {b.Name}");
+            if (a.Version == ASVersion.rvt2023)
+            {
+                Console.WriteLine("LOOKOUT");
             }
             //Data sourcy
             if (a.DataSources.Count != b.DataSources.Count)
@@ -238,9 +241,18 @@ namespace DBSwitcher
         {
             try
             {
+                if (Version == ASVersion.rvt2023)
+                {
+                    Console.WriteLine("test");
+                }
                 var configCurrent = ReadCurrent(Version);
                 return Compare(this, configCurrent);
-            } catch (FileNotFoundException)
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+            catch (DirectoryNotFoundException)
             {
                 return false;
             }
@@ -451,6 +463,11 @@ namespace DBSwitcher
             if (Utils.IsRevit(version))
             {
                 filename = @"C:\ProgramData\Autodesk\Revit Steel Connections 2020\pl-PL\DatabaseConfiguration.xml";
+            }
+
+            if (version == ASVersion.rvt2023)
+            {
+                filename = @"C:\ProgramData\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml";
             }
 
             doc.Load(filename);

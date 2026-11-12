@@ -4,39 +4,39 @@
   "DataSources": [
       {
         "Name": "AstorRules",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorRules.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorRules.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorBase",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBase.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorBase.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorSettings",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorSettings.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorSettings.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorControlStructure",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstCrtlDb.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstCrtlDb.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorBitmaps",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorBitmaps.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorBitmaps.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorCurrentAddIn",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=User2\\Data\\AstorAddIn.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorAddIn.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorJointsCalculation",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=StressAnalysis\\Data\\AstorJointsCalculation.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorJointsCalculation.mdf;Connection Timeout=120"
       },
       {
         "Name": "AstorProfiles",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\AstorProfiles.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=AstorProfiles.mdf;Connection Timeout=120"
       },
       {
         "Name": "GTCMapping",
-        "Value": "Server=(LocalDB)\\AdvanceSteel2023;Integrated Security=true;AttachDbFileName=Steel\\Data\\GTCMapping.mdf"
+        "Value": "Server=(LocalDB)\\SteelConnections2023;Integrated Security=true;AttachDbFileName=GTCMapping.mdf;Connection Timeout=120"
       }
   ],
   "AdvanceSteelConfigDir": "",
