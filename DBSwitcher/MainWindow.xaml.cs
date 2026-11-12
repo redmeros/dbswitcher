@@ -36,6 +36,7 @@ namespace DBSwitcher
         public MainWindow()
         {
             InitializeComponent();
+            SourceInitialized += (s, e) => WindowBackdrop.TryApplyMica(this);
             this.Title = "ASDbSwitcher - " + this.AppVersion;
 
             _applicationPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -85,11 +86,6 @@ namespace DBSwitcher
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CloseMemuItemClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         /// <summary>
         /// Otwiera w explorerze katalog z ustawieniami
         /// </summary>

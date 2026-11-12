@@ -77,6 +77,7 @@ namespace DBSwitcher
                 Text = VersionString(Version),
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
+                Foreground = (Brush)Application.Current.FindResource("TextBrush"),
             };
 
             MainGroupbox.Header = txt;
@@ -125,7 +126,16 @@ namespace DBSwitcher
                     continue;
                 }
 
-                btn.Background = entry.Config.IsCurrent() ? Brushes.LightBlue : SystemColors.ControlBrush;
+                if (entry.Config.IsCurrent())
+                {
+                    btn.Background = (Brush)Application.Current.FindResource("AccentBrush");
+                    btn.Foreground = Brushes.White;
+                }
+                else
+                {
+                    btn.ClearValue(Control.BackgroundProperty);
+                    btn.ClearValue(Control.ForegroundProperty);
+                }
             }
         }
 
@@ -147,8 +157,8 @@ namespace DBSwitcher
             {
                 Tag = entry,
                 Content = box,
-                Height = 50,
-                Width = 120,
+                Height = 56,
+                Width = 140,
                 Margin = new Thickness(10),
             };
             btn.Click += SettingButtonClick;
