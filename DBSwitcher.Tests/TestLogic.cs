@@ -197,6 +197,23 @@ namespace DBSwitcher.Tests
         }
 
         [Test]
+        public void FileNamesAreMatchedStrictly()
+        {
+            Write("AS2023_local2.config.json");
+            Write("AS2023_a1_b2.config.json");
+            Write("AS2023_local.configXjson");
+            Write("AS2023_local.config.json.bak");
+            Write("XAS2023_local.config.json");
+            Write("AS20231_local.config.json");
+
+            var entries = ZConfigEntry.GetEntries(_dir, ASVersion.v2023);
+
+            Assert.That(
+                entries.Select(e => Path.GetFileName(e.FileName)),
+                Is.EquivalentTo(new[] { "AS2023_local2.config.json", "AS2023_a1_b2.config.json" }));
+        }
+
+        [Test]
         public void RevitVersion_UsesRvtPrefix()
         {
             Write("AS2023_local.config.json");
@@ -251,19 +268,19 @@ namespace DBSwitcher.Tests
         [TestCase("")]
         public void EmptyName_IsNotInstalled(string name)
         {
-            Assert.That(ZSteelDicovery.IsSoftwareInstalled(name), Is.False);
+            Assert.That(ZSteelDiscovery.IsSoftwareInstalled(name), Is.False);
         }
 
         [Test]
         public void UnknownSoftware_IsNotInstalled()
         {
-            Assert.That(ZSteelDicovery.IsSoftwareInstalled("Advance Steel 1900 " + Guid.NewGuid()), Is.False);
+            Assert.That(ZSteelDiscovery.IsSoftwareInstalled("Advance Steel 1900 " + Guid.NewGuid()), Is.False);
         }
 
         [Test]
         public void ReadInstalledNames_FindsProgramsOnThisMachine()
         {
-            var names = ZSteelDicovery.ReadInstalledNames();
+            var names = ZSteelDiscovery.ReadInstalledNames();
 
             Assert.That(names, Is.Not.Empty);
             Assert.That(names, Has.None.Null);
@@ -272,9 +289,9 @@ namespace DBSwitcher.Tests
         [Test]
         public void IsSoftwareInstalled_RecognizesAnInstalledProgram()
         {
-            var some = ZSteelDicovery.ReadInstalledNames().First();
+            var some = ZSteelDiscovery.ReadInstalledNames().First();
 
-            Assert.That(ZSteelDicovery.IsSoftwareInstalled(some), Is.True);
+            Assert.That(ZSteelDiscovery.IsSoftwareInstalled(some), Is.True);
         }
     }
 

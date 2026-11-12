@@ -10,7 +10,6 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Deterministic>false</Deterministic>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Version>1.2.0</Version>
     <StartupObject>DBSwitcher.Program</StartupObject>

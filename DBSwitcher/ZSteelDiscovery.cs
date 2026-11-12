@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace DBSwitcher
 {
-    static class ZSteelDicovery
+    static class ZSteelDiscovery
     {
         private const string UninstallKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 

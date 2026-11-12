@@ -118,39 +118,14 @@ namespace DBSwitcher
                     btn.IsEnabled = false;
                     continue;
                 }
-                if (Utils.IsRevit(entry.Version))
-                {
-                    Console.WriteLine("");
-                }
-                if (entry.Config.DisabledVersion)
+
+                if (entry.Config.DisabledVersion || !entry.Config.IsValid())
                 {
                     btn.IsEnabled = false;
                     continue;
                 }
 
-                if (!entry.Config.IsValid())
-                {
-                    btn.IsEnabled = false;
-                    continue;
-                }
-
-                if (btn.Tag == null)
-                {
-                    btn.IsEnabled = false;
-                    continue;
-                }
-                var res = entry.Config.IsCurrent();
-                var ver = entry.Config.Version;
-                var ever = entry.Version;
-
-                if (entry.Config.IsCurrent())
-                {
-                    btn.Background = Brushes.LightBlue;
-                }
-                else
-                {
-                    btn.Background = SystemColors.ControlBrush;
-                }
+                btn.Background = entry.Config.IsCurrent() ? Brushes.LightBlue : SystemColors.ControlBrush;
             }
         }
 
@@ -220,24 +195,13 @@ namespace DBSwitcher
         public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version, ICollection<string> errors = null)
         {
             var files = Directory.GetFiles(dirpath);
-            string pattern;
-            string verstr;
-
-            if ((int)version < 3000)
-            {
-                verstr = "AS" + ((int)version).ToString();
-                pattern = "(?<asversion>" + verstr + ")_(?<name>[A-Za-z_-]+).config.json$";
-            }
-            else
-            {
-                verstr = "RVT" + ((int)version - 90000).ToString();
-                pattern = "(?<asversion>" + verstr + ")_(?<name>[A-Za-z_-]+).config.json$";
-            }
+            var prefix = (int)version < 3000 ? "AS" + (int)version : "RVT" + ((int)version - 90000);
+            var pattern = "^" + prefix + @"_(?<name>[A-Za-z0-9_-]+)\.config\.json$";
 
             var result = new List<ZConfigEntry>();
             foreach (var filename in files)
             {
-                var match = Regex.Match(filename, pattern);
+                var match = Regex.Match(Path.GetFileName(filename), pattern);
                 if (match.Success)
                 {
                     try

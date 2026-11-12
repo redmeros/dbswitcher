@@ -75,8 +75,6 @@ public static class NativeMethods
 
     public static string GetFinalPathName(string path)
     {
-        var log = NLog.LogManager.GetCurrentClassLogger();
-        //log.Info(string.Format("Sciezka ktora sprawdzam: {0}", path));
         var h = CreateFile(path,
             FILE_READ_EA,
             FileShare.ReadWrite | FileShare.Delete,
@@ -84,7 +82,6 @@ public static class NativeMethods
             FileMode.Open,
             FILE_FLAG_BACKUP_SEMANTICS,
             IntPtr.Zero);
-        log.Info(h);
         if (h == INVALID_HANDLE_VALUE)
             throw new Win32Exception();
 

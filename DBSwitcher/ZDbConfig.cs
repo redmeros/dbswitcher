@@ -110,7 +110,7 @@ namespace DBSwitcher
         public string RevitConfigFileName { get; set; } = "";
         public bool DisabledVersion
         {
-            get { return !ZSteelDicovery.IsSoftwareInstalled(ASNames[this.Version]); }
+            get { return !ZSteelDiscovery.IsSoftwareInstalled(ASNames[this.Version]); }
         }
 
         #endregion Public Properties

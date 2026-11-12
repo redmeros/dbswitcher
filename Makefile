@@ -40,9 +40,12 @@ version:
 	@$(GIT_BIN)/echo.exe next: $(VERSION)
 
 # Bumps the version, then packs a Velopack release (installer, full and delta packages) into the UNC feed that installed apps update from.
-# VERSION is written back only after the release succeeded. Commit the VERSION file afterwards.
+# Refuses to run with uncommitted changes unless FORCE=1. VERSION is written back only after the release succeeded. Commit the VERSION file afterwards.
 # Needs: dotnet tool install -g vpk --version 1.2.161
 release:
+ifndef FORCE
+	@test -z "$$(git status --porcelain --untracked-files=no)" || { echo "Uncommitted changes, commit them first (or FORCE=1)"; exit 1; }
+endif
 	dotnet publish $(PROJECT) -c Release -r win-x64 --self-contained true -p:Version=$(VERSION) -o publish
 	vpk pack --packId DBSwitcher --packTitle ASDbSwitcher --packVersion $(VERSION) --packDir publish --mainExe DBSwitcher.exe --icon DBSwitcher/logo.ico --outputDir "$(UNC)"
 	echo $(VERSION)> VERSION

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace DBSwitcher
 {
@@ -19,6 +20,7 @@ namespace DBSwitcher
         {
             // hook on error before app really starts
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
             log.Info("Log started properly");
             base.OnStartup(e);
             _ = Updater.CheckForUpdatesAsync();
@@ -30,6 +32,13 @@ namespace DBSwitcher
             NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
             base.OnExit(e);
+        }
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            log.Error(e.Exception, "Nieobsłużony wyjątek w wątku interfejsu");
+            MessageBox.Show(e.Exception.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
