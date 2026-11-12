@@ -24,14 +24,38 @@ public static class NativeMethods
         return path;
     }
 
-    [DllImport("kernel32.dll")]
-    public static extern bool CreateSymbolicLink(string lpSymLinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateSymbolicLink(string lpSymLinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
 
+    [Flags]
     public enum SymbolicLink
     {
         File = 0,
-        Directory = 1
+        Directory = 1,
+        AllowUnprivilegedCreate = 2
     };
+
+    /// <summary>
+    /// Tworzy dowiązanie do katalogu, rzuca Win32Exception gdy się nie uda (brak uprawnień, tryb dewelopera wyłączony)
+    /// </summary>
+    public static void CreateDirectorySymbolicLink(string link, string target)
+    {
+        if (!CreateSymbolicLink(link, target, SymbolicLink.Directory | SymbolicLink.AllowUnprivilegedCreate))
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error(), $"Nie można utworzyć dowiązania symbolicznego {link} -> {target}");
+        }
+    }
+
+    /// <summary>
+    /// Sprawdza czy da się tworzyć dowiązania zanim cokolwiek zostanie zmienione
+    /// </summary>
+    public static void EnsureCanCreateSymbolicLinks()
+    {
+        var probe = Path.Combine(Path.GetTempPath(), "dbswitcher_probe_" + Guid.NewGuid().ToString("N"));
+        CreateDirectorySymbolicLink(probe, Path.GetTempPath().TrimEnd('\\'));
+        Directory.Delete(probe);
+    }
 
     public static bool IsSymbolicLink(string path)
     {

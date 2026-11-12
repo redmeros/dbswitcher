@@ -16,6 +16,8 @@ namespace DBSwitcher
         /// </summary>
         private readonly ASVersion Version;
 
+        private readonly string _programDataPath;
+
         #endregion Private Fields
 
         #region Public Constructors
@@ -24,9 +26,10 @@ namespace DBSwitcher
         /// Konstruktor wymaga wersji AS dla ktorej beda budowoane sciezki
         /// </summary>
         /// <param name="version"></param>
-        public PathBuilder(ASVersion version)
+        public PathBuilder(ASVersion version, string programDataPath = null)
         {
             Version = version;
+            _programDataPath = programDataPath;
         }
 
         #endregion Public Constructors
@@ -61,7 +64,7 @@ namespace DBSwitcher
         /// C:\ProgramData
         /// </summary>
         public string ProgramDataPath =>
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            _programDataPath ?? Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
         /// <summary>
         /// C:\ProgramData\Autodesk\Advance Steel 2023\POL\Shared\Support
@@ -78,6 +81,9 @@ namespace DBSwitcher
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         private PathBuilder _pathBuilder = null;
+
+        /// <summary>Pozwala testom podmienić C:\ProgramData</summary>
+        internal string ProgramDataPathOverride { get; set; }
 
         #endregion Private Fields
 
@@ -117,7 +123,7 @@ namespace DBSwitcher
             {
                 if (_pathBuilder == null)
                 {
-                    _pathBuilder = new PathBuilder(Version);
+                    _pathBuilder = new PathBuilder(Version, ProgramDataPathOverride);
                 }
                 return _pathBuilder;
             }
@@ -271,10 +277,18 @@ namespace DBSwitcher
                     "Blad podczas backupu bazy, operacja bedzie kontynuowana bez backupu"
                 );
             }
-            DeleteConfigFile();
-            BackupSupportDir();
-            CreateXMLDoc();
-            PrepareSupportDir();
+            var undo = new Stack<Action>();
+            try
+            {
+                SwitchSupportDir(undo);
+                CreateXMLDoc();
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex, "Zmiana ustawień nie powiodła się, przywracam poprzedni stan");
+                Rollback(undo);
+                throw;
+            }
             log.Info("Proces przywracania ustawień zakończony");
         }
 
@@ -342,37 +356,6 @@ namespace DBSwitcher
             return true;
         }
 
-        protected bool BackupSupportDir()
-        {
-            log.Info("Backup katalogu support");
-            var suppDirIsLinkNow = NativeMethods.IsSymbolicLink(PathBuilder.SupportPath);
-            if (suppDirIsLinkNow)
-            {
-                log.Info("Docelowy katalog jest dowiązaniem symbolicznym");
-                Directory.Delete(PathBuilder.SupportPath);
-            }
-            else
-            {
-                try
-                {
-                    Directory.Move(PathBuilder.SupportPath, PathBuilder.SupportPath + ".bak");
-                }
-                catch (Exception e)
-                {
-                    log.Warn(
-                        string.Format(
-                            "Brak możliwości zmiany nazwy katalogu support ze ścieżki {0}",
-                            PathBuilder.SupportPath
-                        )
-                    );
-                    log.Warn(e.Message);
-                    throw;
-                }
-            }
-            log.Info("Zakończono backup katalogu support");
-            return true;
-        }
-
         protected bool CreateXMLDoc(string saveFileName = "")
         {
             if (saveFileName == "")
@@ -404,17 +387,19 @@ namespace DBSwitcher
             log.Info("Stworzono xml, nastąpi próba zapisania");
             // to jest bez bom tak samo bylo w oryginalnych plikach steela
             var encoding = new System.Text.UTF8Encoding(false);
+            var tmpFileName = saveFileName + ".new";
             try
             {
                 using (
                     StreamWriter sw = new StreamWriter(
-                        File.Open(saveFileName, FileMode.Create),
+                        File.Open(tmpFileName, FileMode.Create),
                         encoding
                     )
                 )
                 {
                     doc.Save(sw);
                 }
+                File.Move(tmpFileName, saveFileName, true);
             }
             catch (Exception e)
             {
@@ -426,54 +411,84 @@ namespace DBSwitcher
             return true;
         }
 
-        protected bool DeleteConfigFile()
+        /// <summary>
+        /// Przełącza katalog support (zwykły katalog lub dowiązanie) na ten z konfiguracji.
+        /// Każdy wykonany krok jest odkładany na stosie undo, żeby można go było cofnąć.
+        /// </summary>
+        protected void SwitchSupportDir(Stack<Action> undo)
         {
-            log.Info("Usuwam stary plik konfiguracyjny");
-            try
-            {
-                File.Delete(PathBuilder.ConfigPath);
-            }
-            catch (Exception e)
-            {
-                log.Warn("Brak możliwości usunięcia pliku konfiguracyjnego:");
-                log.Warn(e.Message);
-                log.Warn("Przerywam");
-                throw;
-            }
-            return true;
-        }
+            var support = PathBuilder.SupportPath;
+            var bak = support + ".bak";
+            var currentIsLink = NativeMethods.IsSymbolicLink(support);
+            log.Info("Zmiana katalogu support");
 
-        protected bool PrepareSupportDir()
-        {
-            log.Info("Rozpoczynam pracę nad katalogiem support");
+            if (!SupportDirIsLink && !currentIsLink)
+            {
+                log.Info("Katalog support jest zwykłym katalogiem i taki ma pozostać");
+                return;
+            }
+
+            // sprawdzenia przed jakąkolwiek zmianą
             if (SupportDirIsLink)
             {
-                NativeMethods.CreateSymbolicLink(
-                    PathBuilder.SupportPath,
-                    SupportDirLink,
-                    NativeMethods.SymbolicLink.Directory
+                NativeMethods.EnsureCanCreateSymbolicLinks();
+            }
+            else if (!Directory.Exists(bak))
+            {
+                throw new DirectoryNotFoundException(
+                    $"Brak katalogu {bak} z którego można przywrócić katalog support"
                 );
+            }
+
+            if (currentIsLink)
+            {
+                var oldTarget = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(support));
+                Directory.Delete(support);
+                undo.Push(() => NativeMethods.CreateDirectorySymbolicLink(support, oldTarget));
             }
             else
             {
-                var bakdir = PathBuilder.SupportPath + ".bak";
-                try
+                if (Directory.Exists(bak))
                 {
-                    Directory.Move(bakdir, PathBuilder.SupportPath);
+                    var aside = bak + "." + DateTime.Now.ToString("yyyy-MM-dd_HHmmss");
+                    log.Warn($"Katalog {bak} już istnieje, przenoszę go do {aside}");
+                    Directory.Move(bak, aside);
                 }
-                catch (Exception e)
-                {
-                    log.Warn(string.Format("Brak możliwości zmiany nazwy katalogu - przerywam"));
-                    log.Warn(e.Message);
-                    throw;
-                }
+                Directory.Move(support, bak);
+                undo.Push(() => Directory.Move(bak, support));
             }
-            return true;
+
+            if (SupportDirIsLink)
+            {
+                NativeMethods.CreateDirectorySymbolicLink(support, SupportDirLink);
+                undo.Push(() => Directory.Delete(support));
+            }
+            else
+            {
+                Directory.Move(bak, support);
+                undo.Push(() => Directory.Move(support, bak));
+            }
+            log.Info("Zakończono zmianę katalogu support");
         }
 
         #endregion Protected Methods
 
         #region Private Methods
+
+        private static void Rollback(Stack<Action> undo)
+        {
+            while (undo.Count > 0)
+            {
+                try
+                {
+                    undo.Pop()();
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex, "Nie udało się cofnąć zmiany");
+                }
+            }
+        }
 
         private static List<DbDataSource> ReadDataSourcesFromXml(ASVersion version)
         {

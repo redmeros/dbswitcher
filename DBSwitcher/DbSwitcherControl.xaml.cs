@@ -168,14 +168,11 @@ namespace DBSwitcher
             try
             {
                 entry.Config.MakeCurrent();
+                MessageBox.Show("Operacja przywracania ustawień zakończona");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                MessageBox.Show("Operacja przywracania ustawień zakończona");
             }
             ConfigChanged(sender, e);
         }
