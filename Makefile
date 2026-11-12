@@ -7,13 +7,16 @@ PROJECT := DBSwitcher/DBSwitcher.csproj
 CONFIG  ?= Release
 UNC     ?= //ad03/DCS/02-DCS-DESIGN/DCS-STAL/ASDBSWITCHER_NEW
 
-.PHONY: run build clean version release
+.PHONY: run build test clean version release
 
 run:
 	dotnet run --project $(PROJECT)
 
 build:
 	dotnet build DBSwitcher.sln -c $(CONFIG)
+
+test:
+	dotnet test DBSwitcher.sln -c $(CONFIG)
 
 clean:
 	dotnet clean DBSwitcher.sln -c Debug
