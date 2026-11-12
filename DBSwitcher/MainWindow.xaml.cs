@@ -57,12 +57,6 @@ namespace DBSwitcher
             this.Show();
         }
 
-        ~MainWindow()
-        {
-            log.Info("Zamykam aplikację ... ");
-            NLog.LogManager.Flush();
-        }
-
         private void ComposeUi()
         {
             var vals = Enum.GetValues(typeof(ASVersion)).Cast<ASVersion>();

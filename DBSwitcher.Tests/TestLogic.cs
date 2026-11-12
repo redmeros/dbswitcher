@@ -209,11 +209,72 @@ namespace DBSwitcher.Tests
         }
 
         [Test]
-        public void InvalidJson_Throws()
+        public void InvalidJson_IsSkippedAndReported()
+        {
+            Write("AS2023_local.config.json", "{ not json");
+            Write("AS2023_dcs_net-domain.config.json");
+            var errors = new List<string>();
+
+            var entries = ZConfigEntry.GetEntries(_dir, ASVersion.v2023, errors);
+
+            Assert.That(entries, Has.Count.EqualTo(1));
+            Assert.That(entries[0].FileName, Does.EndWith("AS2023_dcs_net-domain.config.json"));
+            Assert.That(errors, Has.Count.EqualTo(1));
+            Assert.That(errors[0], Does.StartWith("AS2023_local.config.json"));
+        }
+
+        [Test]
+        public void JsonNull_IsReportedAsError()
+        {
+            Write("AS2023_local.config.json", "null");
+            var errors = new List<string>();
+
+            var entries = ZConfigEntry.GetEntries(_dir, ASVersion.v2023, errors);
+
+            Assert.That(entries, Is.Empty);
+            Assert.That(errors, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void InvalidJson_WithoutErrorList_DoesNotThrow()
         {
             Write("AS2023_local.config.json", "{ not json");
 
-            Assert.That(() => ZConfigEntry.GetEntries(_dir, ASVersion.v2023), Throws.Exception);
+            Assert.That(() => ZConfigEntry.GetEntries(_dir, ASVersion.v2023), Throws.Nothing);
+        }
+    }
+
+    [TestFixture]
+    public class TestSoftwareDiscovery
+    {
+        [TestCase(null)]
+        [TestCase("")]
+        public void EmptyName_IsNotInstalled(string name)
+        {
+            Assert.That(ZSteelDicovery.IsSoftwareInstalled(name), Is.False);
+        }
+
+        [Test]
+        public void UnknownSoftware_IsNotInstalled()
+        {
+            Assert.That(ZSteelDicovery.IsSoftwareInstalled("Advance Steel 1900 " + Guid.NewGuid()), Is.False);
+        }
+
+        [Test]
+        public void ReadInstalledNames_FindsProgramsOnThisMachine()
+        {
+            var names = ZSteelDicovery.ReadInstalledNames();
+
+            Assert.That(names, Is.Not.Empty);
+            Assert.That(names, Has.None.Null);
+        }
+
+        [Test]
+        public void IsSoftwareInstalled_RecognizesAnInstalledProgram()
+        {
+            var some = ZSteelDicovery.ReadInstalledNames().First();
+
+            Assert.That(ZSteelDicovery.IsSoftwareInstalled(some), Is.True);
         }
     }
 

@@ -24,7 +24,7 @@ namespace DBSwitcher
             Version = version;
             WorkingDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            ConfigEntries = ZConfigEntry.GetEntries(ConfigDir, Version);
+            ConfigEntries = ZConfigEntry.GetEntries(ConfigDir, Version, LoadErrors);
 
             ComposeUI();
         }
@@ -40,6 +40,11 @@ namespace DBSwitcher
         #region Public Properties
 
         public List<ZConfigEntry> ConfigEntries { get; set; }
+
+        /// <summary>
+        /// Pliki konfiguracyjne których nie udało się wczytać
+        /// </summary>
+        public List<string> LoadErrors { get; } = new List<string>();
         public ASVersion Version { get; set; }
 
         #endregion Public Properties
@@ -80,6 +85,20 @@ namespace DBSwitcher
             {
                 var btn = CreateBtn(entry);
                 MainWrapPanel.Children.Add(btn);
+            }
+
+            foreach (var error in LoadErrors)
+            {
+                MainWrapPanel.Children.Add(
+                    new TextBlock()
+                    {
+                        Text = "Nie wczytano: " + error,
+                        Foreground = Brushes.Firebrick,
+                        TextWrapping = TextWrapping.Wrap,
+                        MaxWidth = 400,
+                        Margin = new Thickness(10),
+                    }
+                );
             }
 
             SetBtnStyles(this, new EventArgs());
@@ -195,7 +214,10 @@ namespace DBSwitcher
 
         private static readonly NLog.ILogger log = NLog.LogManager.GetCurrentClassLogger();
 
-        public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version)
+        /// <summary>
+        /// Wczytuje konfiguracje danej wersji. Uszkodzony plik jest pomijany, a jego opis trafia do errors.
+        /// </summary>
+        public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version, ICollection<string> errors = null)
         {
             var files = Directory.GetFiles(dirpath);
             string pattern;
@@ -221,19 +243,25 @@ namespace DBSwitcher
                     try
                     {
                         var jsonstr = File.ReadAllText(filename);
-                        ZConfigEntry entry = new ZConfigEntry
+                        var config = ZDbConfig.Deserialize(jsonstr);
+                        if (config == null)
                         {
-                            Version = version,
-                            FileName = filename,
-                            Name = Path.GetFileNameWithoutExtension(filename),
-                            Config = ZDbConfig.Deserialize(jsonstr),
-                        };
-                        result.Add(entry);
+                            throw new InvalidDataException("pusty plik konfiguracyjny");
+                        }
+                        result.Add(
+                            new ZConfigEntry
+                            {
+                                Version = version,
+                                FileName = filename,
+                                Name = Path.GetFileNameWithoutExtension(filename),
+                                Config = config,
+                            }
+                        );
                     }
                     catch (Exception ex)
                     {
                         log.Error(ex, $"Blad podczas odczytywania json'a z pliku {filename}");
-                        throw;
+                        errors?.Add($"{Path.GetFileName(filename)} ({ex.Message})");
                     }
                 }
             }

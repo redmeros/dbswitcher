@@ -27,6 +27,8 @@ namespace DBSwitcher
         protected override void OnExit(ExitEventArgs e)
         {
             log.Info("Exiting app");
+            NLog.LogManager.Flush();
+            NLog.LogManager.Shutdown();
             base.OnExit(e);
         }
 
@@ -37,14 +39,6 @@ namespace DBSwitcher
                 MessageBox.Show(fnf.FileName);
             }
             MessageBox.Show(e.ExceptionObject.ToString());
-        }
-
-        ~App()
-        {
-            log.Info("Zamykam aplikację");
-
-            NLog.LogManager.Flush();
-            NLog.LogManager.Shutdown();
         }
     }
 }
