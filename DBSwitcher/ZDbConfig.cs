@@ -36,7 +36,7 @@ namespace DBSwitcher
 
         /// <summary>
         /// Normalnie to jest
-        /// C:\ProgramData\Autodesk\Advance Steel 2019\POL
+        /// C:\ProgramData\Autodesk\Advance Steel 2023\POL
         ///
         /// </summary>
         public string ASPath => Path.Combine(AutodeskPath, "Advance Steel " + ((int)Version).ToString(), Properties.Settings.Default.ASLanguagePrefix);
@@ -48,7 +48,7 @@ namespace DBSwitcher
         public string AutodeskPath => Path.Combine(ProgramDataPath, "Autodesk");
 
         /// <summary>
-        /// C:\ProgramData\Autodesk\Advance Steel 2019\POL\Configuration\DatabaseConfiguration.xml
+        /// C:\ProgramData\Autodesk\Advance Steel 2023\POL\Configuration\DatabaseConfiguration.xml
         /// </summary>
         public string ConfigPath => Path.Combine(ASPath, "Configuration", "DatabaseConfiguration.xml");
 
@@ -58,7 +58,7 @@ namespace DBSwitcher
         public string ProgramDataPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
         /// <summary>
-        /// C:\ProgramData\Autodesk\Advance Steel 2019\POL\Shared\Support
+        /// C:\ProgramData\Autodesk\Advance Steel 2023\POL\Shared\Support
         /// </summary>
         public string SupportPath => Path.Combine(ASPath, "Shared", "Support");
 
@@ -83,12 +83,8 @@ namespace DBSwitcher
 
         private readonly Dictionary<ASVersion, string> ASNames = new Dictionary<ASVersion, string>()
         {
-            { ASVersion.v2018, "Advance Steel 2018" },
-            { ASVersion.v2019, "Advance Steel 2019" },
-            { ASVersion.v2020, "Advance Steel 2020" },
             { ASVersion.v2023, "Advance Steel 2023" },
             { ASVersion.v2027, "Advance Steel 2027" },
-            { ASVersion.rvt2020, "Autodesk Revit 2020" },
             { ASVersion.rvt2023, "Autodesk Revit 2023" }
         };
 
@@ -100,7 +96,7 @@ namespace DBSwitcher
         public string Name { get; set; }
         public bool SupportDirIsLink { get; set; }
         public string SupportDirLink { get; set; }
-        public ASVersion Version { get; set; } = ASVersion.v2019;
+        public ASVersion Version { get; set; } = ASVersion.v2023;
         public string RevitConfigFileName { get; set; } = "";
         public bool DisabledVersion { 
             get
@@ -124,8 +120,6 @@ namespace DBSwitcher
                 return _pathBuilder;
             }
         }
-
-        protected string SupportDirPath => _pathBuilder.SupportPath;
 
         #endregion Protected Properties
 
@@ -191,10 +185,6 @@ namespace DBSwitcher
                 return false;
             }
             log.Info($"Comparing {a.Name} with {b.Name}");
-            if (a.Version == ASVersion.rvt2023)
-            {
-                Console.WriteLine("LOOKOUT");
-            }
             //Data sourcy
             if (a.DataSources.Count != b.DataSources.Count)
             {
@@ -241,10 +231,6 @@ namespace DBSwitcher
         {
             try
             {
-                if (Version == ASVersion.rvt2023)
-                {
-                    Console.WriteLine("test");
-                }
                 var configCurrent = ReadCurrent(Version);
                 return Compare(this, configCurrent);
             }
@@ -286,12 +272,6 @@ namespace DBSwitcher
             log.Info("Rozpoczynam proces zmiany ustawień dla revita");
             BackupRevitConfigFile();
             CreateXMLDoc(RevitConfigFileName);
-        }
-
-        public string Serialize(bool WithName = true)
-        {
-            var json = JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
-            return json;
         }
 
         #endregion Public Methods
@@ -459,11 +439,6 @@ namespace DBSwitcher
             var pathbuilder = new PathBuilder(version);
             var doc = new XmlDocument();
             var filename = pathbuilder.ConfigPath;
-
-            if (Utils.IsRevit(version))
-            {
-                filename = @"C:\ProgramData\Autodesk\Revit Steel Connections 2020\pl-PL\DatabaseConfiguration.xml";
-            }
 
             if (version == ASVersion.rvt2023)
             {

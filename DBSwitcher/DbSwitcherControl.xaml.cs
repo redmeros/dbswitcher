@@ -15,7 +15,6 @@ namespace DBSwitcher
     {
         #region Private Fields
 
-        //private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         #endregion Private Fields
 

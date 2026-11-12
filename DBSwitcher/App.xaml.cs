@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace DBSwitcher
 {
@@ -19,7 +18,6 @@ namespace DBSwitcher
         protected override void OnStartup(StartupEventArgs e)
         {
             // hook on error before app really starts
-            //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             log.Info("Log started properly");
             base.OnStartup(e);
@@ -46,13 +44,6 @@ namespace DBSwitcher
 
             NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
-        }
-
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            log.Info("Został wywołany nieobsłużony wyjątek");
-            log.Info(e.Exception.Message);
-            e.Handled = true;
         }
     }
 }
