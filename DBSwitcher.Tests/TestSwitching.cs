@@ -169,6 +169,74 @@ namespace DBSwitcher.Tests
         }
 
         [Test]
+        public void IsCurrent_IsTrueAfterSwitchingToRealDir()
+        {
+            var config = _pd.MakeConfig(supportIsLink: false, supportLink: _pd.SupportDir);
+
+            Assert.That(config.IsCurrent(), Is.False, "przed przełączeniem plik zawiera tylko <old/>");
+            config.MakeCurrent();
+
+            Assert.That(config.IsCurrent(), Is.True);
+        }
+
+        [Test]
+        public void IsCurrent_IsTrueAfterSwitchingToLink()
+        {
+            RequireSymlinks();
+            var config = _pd.MakeConfig(supportIsLink: true, supportLink: _linkTarget);
+
+            config.MakeCurrent();
+
+            Assert.That(config.IsCurrent(), Is.True);
+            Assert.That(
+                _pd.MakeConfig(supportIsLink: false, supportLink: _pd.SupportDir).IsCurrent(),
+                Is.False);
+        }
+
+        [Test]
+        public void ReadCurrent_ReportsDataSourcesAndLinkState()
+        {
+            _pd.MakeConfig(supportIsLink: false, supportLink: _pd.SupportDir).MakeCurrent();
+
+            var current = ZDbConfig.ReadCurrent(ASVersion.v2023, _pd.Root);
+
+            Assert.That(current.SupportDirIsLink, Is.False);
+            Assert.That(current.DataSources, Has.Count.EqualTo(1));
+            Assert.That(current.DataSources[0].Name, Is.EqualTo("A"));
+            Assert.That(current.DataSources[0].Value, Is.EqualTo("Server=x"));
+        }
+
+        [Test]
+        public void ReadCurrent_WithoutConfigFile_Throws()
+        {
+            File.Delete(_pd.ConfigFile);
+
+            Assert.That(() => ZDbConfig.ReadCurrent(ASVersion.v2023, _pd.Root), Throws.InstanceOf<FileNotFoundException>());
+        }
+
+        [Test]
+        public void IsCurrent_IsFalseWhenConfigFileIsMissing()
+        {
+            File.Delete(_pd.ConfigFile);
+
+            Assert.That(_pd.MakeConfig(supportIsLink: false, supportLink: _pd.SupportDir).IsCurrent(), Is.False);
+        }
+
+        [Test]
+        public void Revit_WithoutConfiguredFileName_UsesDefaultRevitPath()
+        {
+            var revitFile = new PathBuilder(ASVersion.rvt2023, _pd.Root).RevitConfigPath;
+            Directory.CreateDirectory(Path.GetDirectoryName(revitFile));
+            File.WriteAllText(revitFile, "<old/>");
+            var config = _pd.MakeConfig(version: ASVersion.rvt2023);
+
+            config.MakeCurrent();
+
+            Assert.That(File.ReadAllText(revitFile), Does.Contain("Server=x"));
+            Assert.That(config.IsCurrent(), Is.True);
+        }
+
+        [Test]
         public void Revit_BacksUpAndRewritesRevitConfigFile()
         {
             var revitFile = Path.Combine(_pd.Root, "revit", "DatabaseConfiguration.xml");

@@ -71,6 +71,17 @@ namespace DBSwitcher
         /// </summary>
         public string SupportPath => Path.Combine(ASPath, "Shared", "Support");
 
+        /// <summary>
+        /// C:\ProgramData\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml
+        /// </summary>
+        public string RevitConfigPath =>
+            Path.Combine(
+                AutodeskPath,
+                "Revit Steel Connections " + ((int)Version - 90000),
+                "pl-PL",
+                "DatabaseConfiguration.xml"
+            );
+
         #endregion Public Properties
     }
 
@@ -108,6 +119,12 @@ namespace DBSwitcher
         public string SupportDirLink { get; set; }
         public ASVersion Version { get; set; } = ASVersion.v2023;
         public string RevitConfigFileName { get; set; } = "";
+
+        /// <summary>
+        /// Plik konfiguracji Revita: wartość z jsona, a gdy jej nie ma domyślna ścieżka z PathBuilder
+        /// </summary>
+        internal string RevitConfigFile =>
+            string.IsNullOrEmpty(RevitConfigFileName) ? PathBuilder.RevitConfigPath : RevitConfigFileName;
         public bool DisabledVersion
         {
             get { return !ZSteelDiscovery.IsSoftwareInstalled(ASNames[this.Version]); }
@@ -159,7 +176,11 @@ namespace DBSwitcher
             }
         }
 
-        public static ZDbConfig ReadCurrent(ASVersion version)
+        public static ZDbConfig ReadCurrent(
+            ASVersion version,
+            string programDataPath = null,
+            string revitConfigFileName = null
+        )
         {
             try
             {
@@ -167,6 +188,8 @@ namespace DBSwitcher
                 {
                     Version = version,
                     Name = "Current config for AS" + version,
+                    ProgramDataPathOverride = programDataPath,
+                    RevitConfigFileName = revitConfigFileName ?? "",
                 };
                 if (Utils.IsRevit(version))
                 {
@@ -181,7 +204,9 @@ namespace DBSwitcher
                         NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath)
                     );
                 }
-                config.DataSources = ReadDataSourcesFromXml(version);
+                config.DataSources = ReadDataSourcesFromXml(
+                    Utils.IsRevit(version) ? config.RevitConfigFile : config.PathBuilder.ConfigPath
+                );
                 return config;
             }
             catch (Win32Exception)
@@ -196,22 +221,15 @@ namespace DBSwitcher
             {
                 return false;
             }
-            log.Info($"Comparing {a.Name} with {b.Name}");
-            //Data sourcy
+            log.Debug($"Comparing {a.Name} with {b.Name}");
             if (a.DataSources.Count != b.DataSources.Count)
             {
                 log.Debug("Nie zgadza się liczba datasourcow");
                 return false;
             }
-            for (int i = 0; i < a.DataSources.Count; i++)
+            if (!DataSourcesMatch(a.DataSources, b.DataSources))
             {
-                var ads = a.DataSources[i];
-                var bds = b.DataSources[i];
-                if (!DbDataSource.Compare(ads, bds))
-                {
-                    log.Debug(string.Format("Datasourcy w poz {0} nie zgadzaja się", i));
-                    return false;
-                }
+                return false;
             }
             if (!Utils.IsRevit(a.Version) || !Utils.IsRevit(b.Version))
             {
@@ -244,7 +262,7 @@ namespace DBSwitcher
         {
             try
             {
-                var configCurrent = ReadCurrent(Version);
+                var configCurrent = ReadCurrent(Version, ProgramDataPathOverride, RevitConfigFileName);
                 return Compare(this, configCurrent);
             }
             catch (FileNotFoundException)
@@ -296,7 +314,7 @@ namespace DBSwitcher
         {
             log.Info("Rozpoczynam proces zmiany ustawień dla revita");
             BackupRevitConfigFile();
-            CreateXMLDoc(RevitConfigFileName);
+            CreateXMLDoc(RevitConfigFile);
         }
 
         #endregion Public Methods
@@ -307,7 +325,7 @@ namespace DBSwitcher
         {
             log.Info("Rozpoczynam backup pliku konfiguracyjnego");
             var newConfigFileName = Path.ChangeExtension(
-                RevitConfigFileName,
+                RevitConfigFile,
                 DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l")
             );
             log.Info(
@@ -318,7 +336,7 @@ namespace DBSwitcher
             );
             try
             {
-                File.Copy(RevitConfigFileName, newConfigFileName);
+                File.Copy(RevitConfigFile, newConfigFileName);
             }
             catch (Exception e)
             {
@@ -475,6 +493,25 @@ namespace DBSwitcher
 
         #region Private Methods
 
+        /// <summary>
+        /// Data sourcy są równe niezależnie od kolejności (Steel może je zapisać w innym porządku niż plik json)
+        /// </summary>
+        private static bool DataSourcesMatch(List<DbDataSource> a, List<DbDataSource> b)
+        {
+            var remaining = new List<DbDataSource>(b);
+            foreach (var ads in a)
+            {
+                var index = remaining.FindIndex(bds => DbDataSource.Compare(ads, bds));
+                if (index < 0)
+                {
+                    log.Debug($"Datasource {ads.Name} nie ma odpowiednika");
+                    return false;
+                }
+                remaining.RemoveAt(index);
+            }
+            return true;
+        }
+
         private static void Rollback(Stack<Action> undo)
         {
             while (undo.Count > 0)
@@ -490,18 +527,9 @@ namespace DBSwitcher
             }
         }
 
-        private static List<DbDataSource> ReadDataSourcesFromXml(ASVersion version)
+        private static List<DbDataSource> ReadDataSourcesFromXml(string filename)
         {
-            var pathbuilder = new PathBuilder(version);
             var doc = new XmlDocument();
-            var filename = pathbuilder.ConfigPath;
-
-            if (version == ASVersion.rvt2023)
-            {
-                filename =
-                    @"C:\ProgramData\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml";
-            }
-
             doc.Load(filename);
 
             var _datasources = new List<DbDataSource>();

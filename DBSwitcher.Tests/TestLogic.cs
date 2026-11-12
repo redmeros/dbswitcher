@@ -51,6 +51,16 @@ namespace DBSwitcher.Tests
         }
 
         [Test]
+        public void RevitConfigPath_UsesRevitYear()
+        {
+            var builder = new PathBuilder(ASVersion.rvt2023, @"C:\PD");
+
+            Assert.That(
+                builder.RevitConfigPath,
+                Is.EqualTo(@"C:\PD\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml"));
+        }
+
+        [Test]
         public void ProgramDataPath_DefaultsToSystemCommonAppData()
         {
             var builder = new PathBuilder(ASVersion.v2023);
@@ -115,6 +125,34 @@ namespace DBSwitcher.Tests
             var b = Config(sources: new[] { ("A", "integrated security=true;server=x") });
 
             Assert.That(ZDbConfig.Compare(a, b), Is.True);
+        }
+
+        [Test]
+        public void SourceOrderDoesNotMatter()
+        {
+            var a = Config(sources: new[] { ("A", "Server=x"), ("B", "Server=y") });
+            var b = Config(sources: new[] { ("B", "Server=y"), ("A", "Server=x") });
+
+            Assert.That(ZDbConfig.Compare(a, b), Is.True);
+        }
+
+        [Test]
+        public void ReorderedSourcesWithDifferentValue_IsNotEqual()
+        {
+            var a = Config(sources: new[] { ("A", "Server=x"), ("B", "Server=y") });
+            var b = Config(sources: new[] { ("B", "Server=y"), ("A", "Server=OTHER") });
+
+            Assert.That(ZDbConfig.Compare(a, b), Is.False);
+        }
+
+        [Test]
+        public void DuplicateSourceNames_AreMatchedOneToOne()
+        {
+            var a = Config(sources: new[] { ("A", "Server=x"), ("A", "Server=x") });
+            var b = Config(sources: new[] { ("A", "Server=x"), ("A", "Server=y") });
+
+            Assert.That(ZDbConfig.Compare(a, b), Is.False);
+            Assert.That(ZDbConfig.Compare(b, a), Is.False);
         }
 
         [Test]
