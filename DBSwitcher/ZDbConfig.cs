@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Xml;
 using Newtonsoft.Json;
-using NLog;
 
 namespace DBSwitcher
 {
@@ -39,7 +38,12 @@ namespace DBSwitcher
         /// C:\ProgramData\Autodesk\Advance Steel 2023\POL
         ///
         /// </summary>
-        public string ASPath => Path.Combine(AutodeskPath, "Advance Steel " + ((int)Version).ToString(), Properties.Settings.Default.ASLanguagePrefix);
+        public string ASPath =>
+            Path.Combine(
+                AutodeskPath,
+                "Advance Steel " + ((int)Version).ToString(),
+                Properties.Settings.Default.ASLanguagePrefix
+            );
 
         /// <summary>
         /// normalnie to jest:
@@ -50,12 +54,14 @@ namespace DBSwitcher
         /// <summary>
         /// C:\ProgramData\Autodesk\Advance Steel 2023\POL\Configuration\DatabaseConfiguration.xml
         /// </summary>
-        public string ConfigPath => Path.Combine(ASPath, "Configuration", "DatabaseConfiguration.xml");
+        public string ConfigPath =>
+            Path.Combine(ASPath, "Configuration", "DatabaseConfiguration.xml");
 
         /// <summary>
         /// C:\ProgramData
         /// </summary>
-        public string ProgramDataPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        public string ProgramDataPath =>
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
         /// <summary>
         /// C:\ProgramData\Autodesk\Advance Steel 2023\POL\Shared\Support
@@ -77,15 +83,13 @@ namespace DBSwitcher
 
         #region Private Constructors
 
-        private ZDbConfig()
-        {
-        }
+        private ZDbConfig() { }
 
         private readonly Dictionary<ASVersion, string> ASNames = new Dictionary<ASVersion, string>()
         {
             { ASVersion.v2023, "Advance Steel 2023" },
             { ASVersion.v2027, "Advance Steel 2027" },
-            { ASVersion.rvt2023, "Autodesk Revit 2023" }
+            { ASVersion.rvt2023, "Autodesk Revit 2023" },
         };
 
         #endregion Private Constructors
@@ -98,11 +102,9 @@ namespace DBSwitcher
         public string SupportDirLink { get; set; }
         public ASVersion Version { get; set; } = ASVersion.v2023;
         public string RevitConfigFileName { get; set; } = "";
-        public bool DisabledVersion { 
-            get
-            {
-                return !ZSteelDicovery.IsSoftwareInstalled(ASNames[this.Version]);
-            }
+        public bool DisabledVersion
+        {
+            get { return !ZSteelDicovery.IsSoftwareInstalled(ASNames[this.Version]); }
         }
 
         #endregion Public Properties
@@ -166,8 +168,12 @@ namespace DBSwitcher
                 }
                 if (!Utils.IsRevit(version))
                 {
-                    config.SupportDirIsLink = NativeMethods.IsSymbolicLink(config.PathBuilder.SupportPath);
-                    config.SupportDirLink = NativeMethods.NormalizePath(NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath));
+                    config.SupportDirIsLink = NativeMethods.IsSymbolicLink(
+                        config.PathBuilder.SupportPath
+                    );
+                    config.SupportDirLink = NativeMethods.NormalizePath(
+                        NativeMethods.GetFinalPathName(config.PathBuilder.SupportPath)
+                    );
                 }
                 config.DataSources = ReadDataSourcesFromXml(version);
                 return config;
@@ -201,7 +207,8 @@ namespace DBSwitcher
                     return false;
                 }
             }
-            if (!Utils.IsRevit(a.Version) || !Utils.IsRevit(b.Version)) {
+            if (!Utils.IsRevit(a.Version) || !Utils.IsRevit(b.Version))
+            {
                 if (a.SupportDirIsLink != b.SupportDirIsLink)
                 {
                     log.Debug("Nie zgadza się supportdirislink");
@@ -256,9 +263,13 @@ namespace DBSwitcher
             try
             {
                 BackupConfigFile();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                log.Error(ex, "Blad podczas backupu bazy, operacja bedzie kontynuowana bez backupu");
+                log.Error(
+                    ex,
+                    "Blad podczas backupu bazy, operacja bedzie kontynuowana bez backupu"
+                );
             }
             DeleteConfigFile();
             BackupSupportDir();
@@ -281,15 +292,24 @@ namespace DBSwitcher
         protected bool BackupRevitConfigFile()
         {
             log.Info("Rozpoczynam backup pliku konfiguracyjnego");
-            var newConfigFileName = Path.ChangeExtension(RevitConfigFileName, DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l"));
-            log.Info(string.Format("Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}", newConfigFileName));
+            var newConfigFileName = Path.ChangeExtension(
+                RevitConfigFileName,
+                DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l")
+            );
+            log.Info(
+                string.Format(
+                    "Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}",
+                    newConfigFileName
+                )
+            );
             try
             {
                 File.Copy(RevitConfigFileName, newConfigFileName);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Warn(e.Message);
-                throw e;
+                throw;
             }
             return true;
         }
@@ -299,8 +319,16 @@ namespace DBSwitcher
             try
             {
                 log.Info("Rozpoczynam backup pliku z konfiguracyjnego");
-                var newConfigFileName = Path.ChangeExtension(PathBuilder.ConfigPath, DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l"));
-                log.Info(string.Format("Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}", newConfigFileName));
+                var newConfigFileName = Path.ChangeExtension(
+                    PathBuilder.ConfigPath,
+                    DateTime.Now.ToString("yyyy-MM-dd_HHmmss.x\\m\\l")
+                );
+                log.Info(
+                    string.Format(
+                        "Backup pliku konfiguracyjnego będzie znajdował się tutaj: {0}",
+                        newConfigFileName
+                    )
+                );
                 File.Copy(PathBuilder.ConfigPath, newConfigFileName, false);
             }
             catch (Exception e)
@@ -308,7 +336,7 @@ namespace DBSwitcher
                 log.Warn("Brak możliwości skopiowania pliku:");
                 log.Warn(e.Message);
                 log.Warn("Przerywam");
-                throw e;
+                throw;
             }
             log.Info("Stworzono plik backupu z konfiguracją");
             return true;
@@ -331,9 +359,14 @@ namespace DBSwitcher
                 }
                 catch (Exception e)
                 {
-                    log.Warn(string.Format("Brak możliwości zmiany nazwy katalogu support ze ścieżki {0}", PathBuilder.SupportPath));
+                    log.Warn(
+                        string.Format(
+                            "Brak możliwości zmiany nazwy katalogu support ze ścieżki {0}",
+                            PathBuilder.SupportPath
+                        )
+                    );
                     log.Warn(e.Message);
-                    throw e;
+                    throw;
                 }
             }
             log.Info("Zakończono backup katalogu support");
@@ -373,8 +406,12 @@ namespace DBSwitcher
             var encoding = new System.Text.UTF8Encoding(false);
             try
             {
-               
-                using (StreamWriter sw = new StreamWriter(File.Open(saveFileName, FileMode.Create), encoding))
+                using (
+                    StreamWriter sw = new StreamWriter(
+                        File.Open(saveFileName, FileMode.Create),
+                        encoding
+                    )
+                )
                 {
                     doc.Save(sw);
                 }
@@ -383,7 +420,7 @@ namespace DBSwitcher
             {
                 log.Warn("Brak możliwości zapisu pliku konfiguracyjnego - przerywam");
                 log.Warn(e.Message);
-                throw e;
+                throw;
             }
             log.Info("Zapisano plik xml");
             return true;
@@ -401,7 +438,7 @@ namespace DBSwitcher
                 log.Warn("Brak możliwości usunięcia pliku konfiguracyjnego:");
                 log.Warn(e.Message);
                 log.Warn("Przerywam");
-                throw e;
+                throw;
             }
             return true;
         }
@@ -411,7 +448,11 @@ namespace DBSwitcher
             log.Info("Rozpoczynam pracę nad katalogiem support");
             if (SupportDirIsLink)
             {
-                NativeMethods.CreateSymbolicLink(PathBuilder.SupportPath, SupportDirLink, NativeMethods.SymbolicLink.Directory);
+                NativeMethods.CreateSymbolicLink(
+                    PathBuilder.SupportPath,
+                    SupportDirLink,
+                    NativeMethods.SymbolicLink.Directory
+                );
             }
             else
             {
@@ -424,7 +465,7 @@ namespace DBSwitcher
                 {
                     log.Warn(string.Format("Brak możliwości zmiany nazwy katalogu - przerywam"));
                     log.Warn(e.Message);
-                    throw e;
+                    throw;
                 }
             }
             return true;
@@ -442,7 +483,8 @@ namespace DBSwitcher
 
             if (version == ASVersion.rvt2023)
             {
-                filename = @"C:\ProgramData\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml";
+                filename =
+                    @"C:\ProgramData\Autodesk\Revit Steel Connections 2023\pl-PL\DatabaseConfiguration.xml";
             }
 
             doc.Load(filename);
@@ -451,11 +493,13 @@ namespace DBSwitcher
             var nodes = doc.DocumentElement.SelectNodes("/AdvanceSteel/DataSource");
             foreach (XmlNode node in nodes)
             {
-                _datasources.Add(new DbDataSource
-                {
-                    Name = node.Attributes["Name"].Value,
-                    Value = node.Attributes["Value"].Value
-                });
+                _datasources.Add(
+                    new DbDataSource
+                    {
+                        Name = node.Attributes["Name"].Value,
+                        Value = node.Attributes["Value"].Value,
+                    }
+                );
             }
             return _datasources;
         }
@@ -463,3 +507,4 @@ namespace DBSwitcher
         #endregion Private Methods
     }
 }
+

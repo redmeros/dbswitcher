@@ -13,11 +13,6 @@ namespace DBSwitcher
     /// </summary>
     public partial class DbSwitcherControl : UserControl
     {
-        #region Private Fields
-
-
-        #endregion Private Fields
-
         #region Public Constructors
 
         public DbSwitcherControl(ASVersion version)
@@ -63,7 +58,8 @@ namespace DBSwitcher
             if ((int)version < 3000)
             {
                 return "Advance Steel " + ((int)version).ToString();
-            } else
+            }
+            else
             {
                 return "Revit " + ((int)version - 90000).ToString();
             }
@@ -75,7 +71,7 @@ namespace DBSwitcher
             {
                 Text = VersionString(Version),
                 FontSize = 16,
-                FontWeight = FontWeights.SemiBold
+                FontWeight = FontWeights.SemiBold,
             };
 
             MainGroupbox.Header = txt;
@@ -150,7 +146,7 @@ namespace DBSwitcher
                 Text = entry.Config.Name,
                 TextWrapping = TextWrapping.Wrap,
                 TextAlignment = TextAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
             };
 
             var btn = new Button
@@ -159,7 +155,7 @@ namespace DBSwitcher
                 Content = box,
                 Height = 50,
                 Width = 120,
-                Margin = new Thickness(10)
+                Margin = new Thickness(10),
             };
             btn.Click += SettingButtonClick;
             return btn;
@@ -204,8 +200,6 @@ namespace DBSwitcher
 
         public static List<ZConfigEntry> GetEntries(string dirpath, ASVersion version)
         {
-
-
             var files = Directory.GetFiles(dirpath);
             string pattern;
             string verstr;
@@ -235,13 +229,14 @@ namespace DBSwitcher
                             Version = version,
                             FileName = filename,
                             Name = Path.GetFileNameWithoutExtension(filename),
-                            Config = ZDbConfig.Deserialize(jsonstr)
+                            Config = ZDbConfig.Deserialize(jsonstr),
                         };
                         result.Add(entry);
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         log.Error(ex, $"Blad podczas odczytywania json'a z pliku {filename}");
-                        throw ex;
+                        throw;
                     }
                 }
             }
@@ -252,3 +247,4 @@ namespace DBSwitcher
         #endregion Public Methods
     }
 }
+
